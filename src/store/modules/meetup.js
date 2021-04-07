@@ -7,15 +7,15 @@ const initialState = () => ({
     imageId: null,
     place: "",
     agenda: [
-      {
-        type: "registration",
-        language: "RU",
-        startsAt: "",
-        endsAt: "",
-        title: "",
-        description: "",
-        speaker: "",
-      },
+      // {
+      //   type: "registration",
+      //   language: "RU",
+      //   startsAt: "",
+      //   endsAt: "",
+      //   title: "",
+      //   description: "",
+      //   speaker: "",
+      // },
     ],
   },
 });

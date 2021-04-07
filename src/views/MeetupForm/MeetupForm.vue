@@ -6,7 +6,11 @@
           <div class="form-group">
             <label class="form-label">Название</label>
             <!-- <input class="form-control" v-model="meetup.title" /> -->
-            <input class="form-control" @input="setTitleInput" />
+            <input
+              class="form-control"
+              @input="setTitleInput"
+              v-model="localMeetup.title"
+            />
             {{ meetup.title }}
           </div>
           <div class="form-group">
@@ -31,7 +35,12 @@
           </div>
           <div class="form-group">
             <label class="form-label">Изображение</label>
-            <input class="form-control" style="min-height:200px" type="file" />
+            <input
+              class="form-control"
+              @change="onUploadImage"
+              style="min-height:200px"
+              type="file"
+            />
           </div>
         </fieldset>
 
@@ -70,10 +79,10 @@ import FormLayout from "@/components/FormLayout";
 import AgendaItemForm from "@/components/AgendaItemForm/AgendaItemForm";
 
 import { mapGetters, mapActions } from "vuex";
+import { meetupApi } from "@/api";
 
 function createAgendaItem() {
   return {
-    id: Math.random(),
     startsAt: "00:00",
     endsAt: "00:00",
     type: "other",
@@ -86,7 +95,6 @@ function createAgendaItem() {
 
 function createMeetup() {
   return {
-    id: null,
     title: "",
     description: "",
     imageId: null,
@@ -106,6 +114,7 @@ export default {
   data() {
     return {
       localMeetup: createMeetup(),
+      imageFile: null,
     };
   },
 
@@ -134,6 +143,17 @@ export default {
     },
     sendForm(e) {
       e.preventDefault();
+      // this.localMeetup
+    },
+    async onUploadImage(e) {
+      const [file] = e.target.files;
+      this.imageFile = file;
+      try {
+        await meetupApi.uploadImg({ file });
+        console.log("Успех");
+      } catch (err) {
+        console.log(err);
+      }
     },
   },
 };

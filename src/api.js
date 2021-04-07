@@ -19,5 +19,16 @@ class MeetupAPI {
       // body: JSON.stringify({}),
     });
   }
+  async uploadImg(opts = {}) {
+    const { file } = opts;
+    let formData = new FormData();
+    formData.append("file", file);
+
+    return fetch(`${API_URL}/images/upload`, {
+      method: "POST",
+      credentials: "include",
+      body: formData,
+    });
+  }
 }
 export const meetupApi = new MeetupAPI();
