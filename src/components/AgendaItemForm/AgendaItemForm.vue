@@ -1,13 +1,11 @@
 <template>
   <div class="form-section form-section_inner">
-    <button type="button" class="remove-button" @click="$emit('remove')">
+    <button type="button" class="remove-button" @click="remove(index)">
       <app-icon icon="trash" />
     </button>
 
-    <div>{{ agendaTitles }}</div>
-
     <div class="form-group">
-      <select v-model="agendaItem_.type" title="Тип">
+      <select title="Тип">
         <option v-for="(value, key) in agendaTitles" :value="key" :key="key">{{
           value
         }}</option>
@@ -20,9 +18,9 @@
           <label class="form-label">Начало</label>
           <input
             class="form-control"
-            v-model="agendaItem_.startsAt"
             type="time"
             placeholder="00:00"
+            :v-model="agendaItem.startsAt"
           />
         </div>
       </div>
@@ -31,7 +29,7 @@
           <label class="form-label">Окончание</label>
           <input
             class="form-control"
-            v-model="agendaItem_.endsAt"
+            :v-model="agendaItem.endsAt"
             type="time"
             placeholder="00:00"
           />
@@ -41,29 +39,26 @@
 
     <div class="form-group">
       <label class="form-label">Заголовок</label>
-      <input class="form-control" v-model="agendaItem_.title" />
+      <input class="form-control" :v-model="agendaItem.title" />
     </div>
     <div class="form-group">
       <label class="form-label">Описание</label>
-      <textarea
-        class="form-control"
-        v-model="agendaItem_.description"
-      ></textarea>
+      <textarea class="form-control"></textarea>
     </div>
   </div>
 </template>
 
 <script>
 import AppIcon from "@/components/AppIcon";
-import { deepClone, deepEqual } from "@/utils";
 import { agendaItemTitles } from "@/utils/data.js";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "AgendaItemForm",
 
   props: {
-    agendaItem: {
-      type: Object,
+    index: {
+      type: Number,
       required: true,
     },
   },
@@ -72,33 +67,24 @@ export default {
     AppIcon,
   },
 
-  data() {
-    return {
-      agendaItem_: null,
-    };
-  },
-
-  watch: {
-    agendaItem: {
-      deep: true,
-      immediate: true,
-      handler(newValue) {
-        if (!deepEqual(newValue, this.agendaItem_)) {
-          this.agendaItem_ = deepClone(this.agendaItem);
-        }
-      },
-    },
-
-    agendaItem_: {
-      deep: true,
-      handler(newValue) {
-        this.$emit("update:agendaItem", deepClone(newValue));
-      },
-    },
-  },
   computed: {
+    ...mapGetters({
+      meetup: "meetup/meetup",
+    }),
+    agendaItem() {
+      return this.meetup.agenda[this.index];
+    },
     agendaTitles() {
       return agendaItemTitles;
+    },
+  },
+  methods: {
+    ...mapActions({
+      setAgendaItemField: "meetup/setAgendaItemField",
+      removeAgendaItem: "meetup/removeAgendaItem",
+    }),
+    remove(index) {
+      this.removeAgendaItem(index);
     },
   },
 };

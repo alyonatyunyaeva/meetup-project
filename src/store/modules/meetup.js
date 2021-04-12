@@ -1,23 +1,6 @@
 const initialState = () => ({
   profile: initialProfile(),
-  meetup: {
-    title: "",
-    description: "",
-    date: "",
-    imageId: null,
-    place: "",
-    agenda: [
-      // {
-      //   type: "registration",
-      //   language: "RU",
-      //   startsAt: "",
-      //   endsAt: "",
-      //   title: "",
-      //   description: "",
-      //   speaker: "",
-      // },
-    ],
-  },
+  meetup: null,
 });
 
 const initialProfile = () => ({
@@ -35,10 +18,25 @@ const getters = {
 };
 
 const actions = {
-  setTitle: ({ commit }, value) => {
-    commit("_setTitle", value);
+  setMeetup: ({ commit }, meetup) => {
+    commit("_setMeetup", meetup);
   },
-  setProfile: ({ commit }, opts = {}) => {
+  setMeetupField({ commit }, opts) {
+    commit("_setMeetupField", opts);
+  },
+  pushAgendaItem({ commit }, opts) {
+    commit("_pushAgendaItem", opts);
+  },
+  setAgendaItemField({ commit }, opts) {
+    commit("_setAgendaItemField", opts);
+  },
+  removeAgendaItem({ commit }, opts) {
+    commit("_removeAgendaItem", opts);
+  },
+  removeMeetup({ commit }) {
+    commit("_flushMeetup");
+  },
+  setProfile: ({ commit }, opts) => {
     commit("_setProfile", opts);
   },
   flush: ({ commit }) => {
@@ -47,13 +45,28 @@ const actions = {
 };
 
 const mutations = {
-  _setTitle: (state, value) => {
-    state.meetup.title = value;
+  _setMeetup: (state, meetup) => {
+    state.meetup = meetup;
+  },
+  _setMeetupField(state, { field, value }) {
+    state.meetup[field] = value;
+  },
+  _pushAgendaItem(state, newAgendaItem) {
+    state.meetup.agenda.push(newAgendaItem);
+  },
+  _setAgendaItemField(state, { index, field, value }) {
+    state.meetup.agenda[index][field] = value;
+  },
+  _removeAgendaItem(state, index) {
+    state.meetup.agenda.splice(index, 1);
+  },
+  _flushMeetup: (state) => {
+    state.meetup = null;
   },
   _setProfile: (state, opts = {}) => {
     state.profile = opts;
   },
-  _flush: () => {
+  _flush: (state) => {
     Object.assign(state, initialState());
   },
 };

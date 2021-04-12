@@ -74,7 +74,6 @@ export default {
 
     async sendLoginForm(e) {
       e.preventDefault();
-      console.log();
       if (!this.canSend()) return;
 
       const email = this.email;

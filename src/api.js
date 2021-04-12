@@ -13,10 +13,6 @@ class MeetupAPI {
   async logout() {
     return fetch(`${API_URL}/auth/logout`, {
       method: "POST",
-      // headers: {
-      //   "Content-Type": "application/json",
-      // },
-      // body: JSON.stringify({}),
     });
   }
   async uploadImg(opts = {}) {
@@ -26,7 +22,9 @@ class MeetupAPI {
 
     return fetch(`${API_URL}/images/upload`, {
       method: "POST",
-      credentials: "include",
+      // Cookie: session = s%3ARqsCLg8ICqtFoHQtQeEVWOS5sP_BOLcd.mpRWzJ12puOA4NvWr6SX2Dl7FsG3VG1WoeHAkFDXWvo,
+      // credentials: "include",
+      // mode: "no-cors",
       body: formData,
     });
   }

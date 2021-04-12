@@ -60,18 +60,17 @@ export default {
   props: {
     meetup: {
       required: true,
-      type: Object
-    }
+      type: Object,
+    },
   },
   computed: {
     link() {
       return this.meetup?.imageId ? getMeetupCoverLink(this.meetup) : "";
     },
     coverStyle() {
-      console.log("this.link", this.link);
       return this.link ? { "--bg-url": `url('${this.link}')` } : {};
-    }
-  }
+    },
+  },
 };
 </script>
 

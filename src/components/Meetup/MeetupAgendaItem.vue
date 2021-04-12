@@ -26,8 +26,8 @@ export default {
   props: {
     agendaItem: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
 
   computed: {
@@ -38,12 +38,11 @@ export default {
     },
 
     iconPath() {
-      console.log(
-        `../../assets/icons/icon-${agendaItemIcons[this.agendaItem.type]}.svg`
-      );
-      return `../../assets/icons/icon-${agendaItemIcons[this.agendaItem.type]}.svg`;
-    }
-  }
+      return `../../assets/icons/icon-${
+        agendaItemIcons[this.agendaItem.type]
+      }.svg`;
+    },
+  },
 };
 </script>
 
