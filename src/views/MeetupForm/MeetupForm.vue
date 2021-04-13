@@ -10,15 +10,19 @@
             </div>
             <div class="form-group">
               <label class="form-label">Дата</label>
-              <input class="form-control" type="date" />
+              <input class="form-control" type="date" v-model.lazy="date" />
             </div>
             <div class="form-group">
               <label class="form-label">Место проведения</label>
-              <input class="form-control" />
+              <input class="form-control" v-model.lazy="place" />
             </div>
             <div class="form-group">
               <label class="form-label">Описание</label>
-              <textarea class="form-control" style="min-height:200px" />
+              <textarea
+                class="form-control"
+                style="min-height:200px"
+                v-model.lazy="description"
+              />
             </div>
             <div class="form-group">
               <label class="form-label">Изображение</label>
@@ -117,6 +121,30 @@ export default {
       },
       set(value) {
         this.setMeetupField({ field: "title", value });
+      },
+    },
+    date: {
+      get() {
+        return this.meetup.date;
+      },
+      set(value) {
+        this.setMeetupField({ field: "date", value });
+      },
+    },
+    place: {
+      get() {
+        return this.meetup.place;
+      },
+      set(value) {
+        this.setMeetupField({ field: "place", value });
+      },
+    },
+    description: {
+      get() {
+        return this.meetup.description;
+      },
+      set(value) {
+        this.setMeetupField({ field: "description", value });
       },
     },
   },

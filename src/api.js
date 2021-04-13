@@ -7,8 +7,12 @@ class MeetupAPI {
       headers: {
         "Content-Type": "application/json",
       },
+      credentials: "same-origin",
       body: JSON.stringify({ email, password }),
-    }).then((res) => res.json());
+    }).then((res) => {
+      console.log(res);
+      return res.json();
+    });
   }
   async logout() {
     return fetch(`${API_URL}/auth/logout`, {
@@ -22,8 +26,8 @@ class MeetupAPI {
 
     return fetch(`${API_URL}/images/upload`, {
       method: "POST",
-      // Cookie: session = s%3ARqsCLg8ICqtFoHQtQeEVWOS5sP_BOLcd.mpRWzJ12puOA4NvWr6SX2Dl7FsG3VG1WoeHAkFDXWvo,
-      // credentials: "include",
+      // Cookie
+      credentials: "include",
       // mode: "no-cors",
       body: formData,
     });
