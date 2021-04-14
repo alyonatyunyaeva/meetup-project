@@ -1,3 +1,5 @@
+import { meetupApi } from "@/api";
+
 const initialState = () => ({
   profile: initialProfile(),
   meetup: null,
@@ -36,9 +38,19 @@ const actions = {
   removeMeetup({ commit }) {
     commit("_flushMeetup");
   },
+  uploadImg: async ({ commit }, opts) => {
+    const { file } = opts;
+    try {
+      const result = await meetupApi.uploadImg({ file });
+      commit("_uploadImg", result.id);
+    } catch (err) {
+      console.log(err);
+    }
+  },
   setProfile: ({ commit }, opts) => {
     commit("_setProfile", opts);
   },
+
   flush: ({ commit }) => {
     commit("_flush");
   },
@@ -68,6 +80,9 @@ const mutations = {
   },
   _flush: (state) => {
     Object.assign(state, initialState());
+  },
+  _uploadImg: (state, id) => {
+    state.meetup.imageId = id;
   },
 };
 

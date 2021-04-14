@@ -70,7 +70,7 @@ import FormLayout from "@/components/FormLayout";
 import AgendaItemForm from "@/components/AgendaItemForm/AgendaItemForm";
 
 import { mapGetters, mapActions } from "vuex";
-import { meetupApi } from "@/api";
+// import { meetupApi } from "@/api";
 
 function createAgendaItem() {
   return {
@@ -155,6 +155,7 @@ export default {
       setMeetupField: "meetup/setMeetupField",
       pushAgendaItem: "meetup/pushAgendaItem",
       removeMeetup: "meetup/removeMeetup",
+      uploadImg: "meetup/uploadImg",
     }),
 
     addAgendaItem() {
@@ -167,11 +168,7 @@ export default {
     async onUploadImage(e) {
       const [file] = e.target.files;
       this.imageFile = file;
-      try {
-        await meetupApi.uploadImg({ file });
-      } catch (err) {
-        console.log(err);
-      }
+      await this.uploadImg({ file });
     },
   },
   created() {

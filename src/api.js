@@ -1,4 +1,4 @@
-const API_URL = "https://course-vue.javascript.ru/api";
+const API_URL = "/api";
 class MeetupAPI {
   async login(opts = {}) {
     const { email, password } = opts;
@@ -7,10 +7,8 @@ class MeetupAPI {
       headers: {
         "Content-Type": "application/json",
       },
-      credentials: "same-origin",
       body: JSON.stringify({ email, password }),
     }).then((res) => {
-      console.log(res);
       return res.json();
     });
   }
@@ -26,10 +24,11 @@ class MeetupAPI {
 
     return fetch(`${API_URL}/images/upload`, {
       method: "POST",
-      // Cookie
       credentials: "include",
       // mode: "no-cors",
       body: formData,
+    }).then((res) => {
+      return res.json();
     });
   }
 }
