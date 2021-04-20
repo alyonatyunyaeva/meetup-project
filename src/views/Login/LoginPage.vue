@@ -53,12 +53,12 @@ export default {
   },
   computed: {
     ...mapGetters({
-      profile: "meetup/profile",
+      profile: "profile/profile",
     }),
   },
   methods: {
     ...mapActions({
-      setProfile: "meetup/setProfile",
+      setProfile: "profile/setProfile",
     }),
     canSend() {
       if (!this.email) {
@@ -84,6 +84,7 @@ export default {
         return;
       }
       this.setProfile(response);
+      localStorage.setItem("profile", JSON.stringify(response));
       this.$router.push({ name: "meetups" });
     },
   },

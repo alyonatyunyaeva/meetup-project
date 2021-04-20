@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import meetup from "./modules/meetup";
+import profile from "./modules/profile";
 
 Vue.use(Vuex);
 export const store = new Vuex.Store({
@@ -10,5 +11,6 @@ export const store = new Vuex.Store({
   actions: {},
   modules: {
     meetup,
+    profile,
   },
 });

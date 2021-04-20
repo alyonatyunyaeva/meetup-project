@@ -32,14 +32,14 @@ export default {
     MeetupCover,
     MeetupDescription,
     MeetupAgenda,
-    MeetupInfo
+    MeetupInfo,
   },
 
   props: {
     meetup: {
       type: Object,
-      required: true
-    }
+      required: true,
+    },
   },
 
   computed: {
@@ -48,8 +48,8 @@ export default {
     },
     date() {
       return new Date(this.meetup.date);
-    }
-  }
+    },
+  },
 };
 </script>
 

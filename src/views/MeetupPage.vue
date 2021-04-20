@@ -6,13 +6,13 @@
 
 <script>
 import MeetupView from "@/components/Meetup/MeetupView.vue";
-import { fetchMeetup } from "@/utils/data.js";
+import { meetupApi } from "@/api";
 
 export default {
   name: "MeetupPage",
 
   components: {
-    MeetupView
+    MeetupView,
   },
   data() {
     return {
@@ -22,8 +22,8 @@ export default {
   },
 
   async mounted() {
-    this.meetup = await fetchMeetup(this.meetupId);
-  }
+    this.meetup = await meetupApi.fetchMeetup(this.meetupId);
+  },
 };
 </script>
 

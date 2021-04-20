@@ -31,16 +31,17 @@ export default {
   name: "Header",
   computed: {
     ...mapGetters({
-      profile: "meetup/profile",
+      profile: "profile/profile",
     }),
   },
   methods: {
     ...mapActions({
-      flush: "meetup/flush",
+      flush: "profile/flush",
     }),
     async onLogout() {
       try {
         await meetupApi.logout();
+        localStorage.removeItem("profile");
         this.flush();
       } catch (err) {
         console.log(err);

@@ -8,9 +8,24 @@
 
 <script>
 import BaseLayout from "./components/BaseLayout";
+import { mapActions } from "vuex";
 export default {
   name: "App",
-  components: { BaseLayout }
+  components: { BaseLayout },
+  methods: {
+    ...mapActions({
+      setProfile: "profile/setProfile",
+    }),
+    hasProfile() {
+      let profile = localStorage.getItem("profile");
+      if (profile) {
+        this.setProfile(JSON.parse(profile));
+      }
+    },
+  },
+  mounted() {
+    this.hasProfile();
+  },
 };
 </script>
 

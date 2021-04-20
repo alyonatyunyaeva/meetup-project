@@ -68,7 +68,7 @@
 <script>
 import FormLayout from "@/components/FormLayout";
 import AgendaItemForm from "@/components/AgendaItemForm/AgendaItemForm";
-
+import { format } from "date-fns";
 import { mapGetters, mapActions } from "vuex";
 // import { meetupApi } from "@/api";
 
@@ -125,10 +125,15 @@ export default {
     },
     date: {
       get() {
-        return this.meetup.date;
+        let formatedDate = null;
+        if (this.meetup.date) {
+          formatedDate = format(new Date(this.meetup.date), "yyyy-MM-dd");
+        }
+        return formatedDate;
       },
       set(value) {
-        this.setMeetupField({ field: "date", value });
+        const date = new Date(value).toISOString();
+        this.setMeetupField({ field: "date", value: date });
       },
     },
     place: {
@@ -156,6 +161,7 @@ export default {
       pushAgendaItem: "meetup/pushAgendaItem",
       removeMeetup: "meetup/removeMeetup",
       uploadImg: "meetup/uploadImg",
+      createMeetup: "meetup/createMeetup",
     }),
 
     addAgendaItem() {
@@ -164,6 +170,7 @@ export default {
 
     sendForm(e) {
       e.preventDefault();
+      this.createMeetup();
     },
     async onUploadImage(e) {
       const [file] = e.target.files;

@@ -27,7 +27,10 @@
 
     <template v-if="filteredMeetups.length">
       <MeetupsList v-if="view === 'list'" :meetups="filteredMeetups" />
-      <MeetupsCalendar v-else-if="view === 'calendar'" :meetups="filteredMeetups" />
+      <MeetupsCalendar
+        v-else-if="view === 'calendar'"
+        :meetups="filteredMeetups"
+      />
     </template>
     <div v-else>Митапов по заданным условиям не найдено...</div>
     <!-- <app-empty v-else>Митапов по заданным условиям не найдено...</app-empty> -->
@@ -36,20 +39,18 @@
 
 <script>
 import MeetupsList from "@/components/Meetups/MeetupsList.vue";
-import MeetupsCalendar from '@/components/Meetups/MeetupsCalendar.vue';
-import PageTabs from '@/components/Meetups/PageTabs.vue';
+import MeetupsCalendar from "@/components/Meetups/MeetupsCalendar.vue";
+import PageTabs from "@/components/Meetups/PageTabs.vue";
+import { meetupApi } from "@/api";
 // import { FormCheck } from './FormCheck.js';
 // import { AppEmpty } from './AppEmpty.js';
-
-const fetchMeetups = () =>
-  fetch("https://course-vue.javascript.ru/api/meetups").then(res => res.json());
 
 export default {
   name: "MeetupsPage",
   dateFilterOptions: [
     { text: "Все", value: "all" },
     { text: "Прошедшие", value: "past" },
-    { text: "Ожидаемые", value: "future" }
+    { text: "Ожидаемые", value: "future" },
   ],
 
   components: {
@@ -66,19 +67,19 @@ export default {
       filter: {
         date: "all",
         participation: "all",
-        search: ""
+        search: "",
       },
-      view: "list"
+      view: "list",
     };
   },
 
   async mounted() {
-    this.rawMeetups = await fetchMeetups();
+    this.rawMeetups = await meetupApi.fetchMeetups();
   },
 
   computed: {
     meetups() {
-      return this.rawMeetups.map(meetup => ({
+      return this.rawMeetups.map((meetup) => ({
         ...meetup,
         cover: meetup.imageId
           ? `https://course-vue.javascript.ru/api/images/${meetup.imageId}`
@@ -87,37 +88,37 @@ export default {
         localDate: new Date(meetup.date).toLocaleString(navigator.language, {
           year: "numeric",
           month: "long",
-          day: "numeric"
+          day: "numeric",
         }),
-        dateOnlyString: new Date(meetup.date).toISOString().split("T")[0]
+        dateOnlyString: new Date(meetup.date).toISOString().split("T")[0],
       }));
     },
 
     filteredMeetups() {
-      const dateFilter = meetup =>
+      const dateFilter = (meetup) =>
         this.filter.date === "all" ||
         (this.filter.date === "past" && new Date(meetup.date) <= new Date()) ||
         (this.filter.date === "future" && new Date(meetup.date) > new Date());
 
-      const participationFilter = meetup =>
+      const participationFilter = (meetup) =>
         this.filter.participation === "all" ||
         (this.filter.participation === "organizing" && meetup.organizing) ||
         (this.filter.participation === "attending" && meetup.attending);
 
-      const searchFilter = meetup =>
+      const searchFilter = (meetup) =>
         [meetup.title, meetup.description, meetup.place, meetup.organizer]
           .join(" ")
           .toLowerCase()
           .includes(this.filter.search.toLowerCase());
 
       return this.meetups.filter(
-        meetup =>
+        (meetup) =>
           dateFilter(meetup) &&
           participationFilter(meetup) &&
           searchFilter(meetup)
       );
-    }
-  }
+    },
+  },
 };
 </script>
 

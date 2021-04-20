@@ -1,22 +1,13 @@
 import { meetupApi } from "@/api";
 
 const initialState = () => ({
-  profile: initialProfile(),
   meetup: null,
-});
-
-const initialProfile = () => ({
-  avatar: "",
-  email: "",
-  fullname: "",
-  id: null,
 });
 
 const state = initialState();
 
 const getters = {
   meetup: (state) => state.meetup,
-  profile: (state) => state.profile,
 };
 
 const actions = {
@@ -47,8 +38,18 @@ const actions = {
       console.log(err);
     }
   },
-  setProfile: ({ commit }, opts) => {
-    commit("_setProfile", opts);
+  createMeetup: async ({ commit }) => {
+    const opts = state.meetup;
+    delete opts.id;
+
+    try {
+      const result = await meetupApi.createMeetup(opts);
+
+      commit("_flushMeetup");
+      return result;
+    } catch (err) {
+      console.log(err);
+    }
   },
 
   flush: ({ commit }) => {
@@ -74,9 +75,6 @@ const mutations = {
   },
   _flushMeetup: (state) => {
     state.meetup = null;
-  },
-  _setProfile: (state, opts = {}) => {
-    state.profile = opts;
   },
   _flush: (state) => {
     Object.assign(state, initialState());
