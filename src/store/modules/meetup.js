@@ -38,14 +38,12 @@ const actions = {
       console.log(err);
     }
   },
-  createMeetup: async ({ commit }) => {
+  createMeetup: async () => {
     const opts = state.meetup;
-    delete opts.id;
+    // delete opts.id;
 
     try {
       const result = await meetupApi.createMeetup(opts);
-
-      commit("_flushMeetup");
       return result;
     } catch (err) {
       console.log(err);
@@ -73,9 +71,7 @@ const mutations = {
   _removeAgendaItem(state, index) {
     state.meetup.agenda.splice(index, 1);
   },
-  _flushMeetup: (state) => {
-    state.meetup = null;
-  },
+
   _flush: (state) => {
     Object.assign(state, initialState());
   },

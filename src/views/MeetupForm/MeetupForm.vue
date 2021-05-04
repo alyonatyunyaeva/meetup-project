@@ -6,15 +6,30 @@
           <fieldset class="form-section">
             <div class="form-group">
               <label class="form-label">Название</label>
-              <input class="form-control" v-model.lazy="title" />
+              <input class="form-control" v-model.lazy="$v.title.$model" />
+              <div style="color: red" v-show="!$v.title.required && submited">
+                Поле обязательно
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">Дата</label>
               <input class="form-control" type="date" v-model.lazy="date" />
+              <div style="color: red" v-if="!$v.date.required && submited">
+                Поле обязательно
+              </div>
+              <div
+                style="color: red"
+                v-if="$v.date.required && !$v.date.minValue"
+              >
+                Неверная дата
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">Место проведения</label>
               <input class="form-control" v-model.lazy="place" />
+              <div style="color: red" v-if="!$v.place.required && submited">
+                Поле обязательно
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">Описание</label>
@@ -23,6 +38,12 @@
                 style="min-height:200px"
                 v-model.lazy="description"
               />
+              <div
+                style="color: red"
+                v-if="!$v.description.required && submited"
+              >
+                Поле обязательно
+              </div>
             </div>
             <div class="form-group">
               <label class="form-label">Изображение</label>
@@ -41,6 +62,7 @@
             :key="agendaItem.id"
             :index="index"
             class="mb-3"
+            :submited="submited"
           />
 
           <div class="form-section_append">
@@ -52,7 +74,11 @@
 
         <div class="meetup-form__aside">
           <div class="meetup-form__aside_stick">
-            <button type="button" class="button button_secondary button_block">
+            <button
+              type="button"
+              class="button button_secondary button_block"
+              @click="onCancel"
+            >
               Cancel
             </button>
             <button class="button button_primary button_block" type="submit">
@@ -68,9 +94,9 @@
 <script>
 import FormLayout from "@/components/FormLayout";
 import AgendaItemForm from "@/components/AgendaItemForm/AgendaItemForm";
+import { required } from "vuelidate/lib/validators";
 import { format } from "date-fns";
 import { mapGetters, mapActions } from "vuex";
-// import { meetupApi } from "@/api";
 
 function createAgendaItem() {
   return {
@@ -85,7 +111,7 @@ function createAgendaItem() {
   };
 }
 
-function createMeetup() {
+function createLocalMeetup() {
   return {
     id: null,
     title: "",
@@ -107,17 +133,33 @@ export default {
   data() {
     return {
       imageFile: null,
+      submited: false,
     };
   },
-
+  validations: {
+    title: {
+      required,
+    },
+    date: {
+      required,
+      minValue: function(value) {
+        return value >= format(new Date(), "yyyy-MM-dd");
+      },
+    },
+    place: {
+      required,
+    },
+    description: {
+      required,
+    },
+  },
   computed: {
     ...mapGetters({
       meetup: "meetup/meetup",
     }),
-
     title: {
       get() {
-        return this.meetup.title;
+        return this.meetup?.title;
       },
       set(value) {
         this.setMeetupField({ field: "title", value });
@@ -162,25 +204,44 @@ export default {
       removeMeetup: "meetup/removeMeetup",
       uploadImg: "meetup/uploadImg",
       createMeetup: "meetup/createMeetup",
+      flushMeetup: "meetup/flush",
     }),
 
     addAgendaItem() {
       this.pushAgendaItem(createAgendaItem());
     },
+    onCancel() {
+      this.$router.push({ name: "meetups" });
+    },
 
-    sendForm(e) {
+    async sendForm(e) {
       e.preventDefault();
-      this.createMeetup();
+      this.$v.$touch();
+      this.submited = true;
+      if (this.$v.$invalid) return;
+      const result = await this.createMeetup();
+      if (result.message) {
+        alert(result.message);
+        return;
+      }
+
+      this.$router.push({ name: "meetup", params: { meetupId: result.id } });
+      this.flushMeetup();
     },
     async onUploadImage(e) {
       const [file] = e.target.files;
       this.imageFile = file;
       await this.uploadImg({ file });
     },
+    newMeetup() {
+      if (!this.meetup) {
+        const payload = createLocalMeetup();
+        this.setMeetup(payload);
+      }
+    },
   },
   created() {
-    const payload = createMeetup();
-    this.setMeetup(payload);
+    this.newMeetup();
   },
 };
 </script>

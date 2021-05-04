@@ -35,3 +35,15 @@ export const agendaItemIcons = {
   afterparty: "cal-sm",
   other: "cal-sm",
 };
+
+//Доступные языки
+export const languages = [
+  {
+    value: "RU",
+    title: "Ru",
+  },
+  {
+    value: "EN",
+    title: "En",
+  },
+];

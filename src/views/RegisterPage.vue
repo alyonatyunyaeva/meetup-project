@@ -49,13 +49,14 @@
 </template>
 
 <script>
-import { register } from "@/utils/data.js";
+// import { register } from "@/utils/data.js";
 import AuthLayout from "@/components/AuthLayout";
+import { meetupApi } from "@/api";
 
 export default {
   name: "RegisterPage",
   components: {
-    AuthLayout
+    AuthLayout,
   },
   data() {
     return {
@@ -63,7 +64,7 @@ export default {
       profileName: "",
       password: "",
       repeatPassword: "",
-      agreement: false
+      agreement: false,
     };
   },
   methods: {
@@ -85,14 +86,14 @@ export default {
         alert("Требуется согласиться с условиями");
         return;
       }
-      const response = await register(
+      const response = await meetupApi.register(
         this.email,
         this.profileName,
         this.password
       );
       alert(response.message || response.id + " - id пользователя");
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -190,20 +191,20 @@ textarea.form-control {
   right: 16px;
 }
 .button {
-    display: inline-block;
-    padding: 10px 24px;
-    font-weight: 700;
-    font-size: 20px;
-    line-height: 28px;
-    text-align: center;
-    border: 4px solid ;
-    transition: .2s all;
-    outline: none;
-    box-shadow: none;
-    cursor: pointer;
-    text-decoration: none;
-    background-color: var(--blue);
-    border-color: var(--blue);
-    color: var(--white);
+  display: inline-block;
+  padding: 10px 24px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+  text-align: center;
+  border: 4px solid;
+  transition: 0.2s all;
+  outline: none;
+  box-shadow: none;
+  cursor: pointer;
+  text-decoration: none;
+  background-color: var(--blue);
+  border-color: var(--blue);
+  color: var(--white);
 }
 </style>

@@ -5,7 +5,7 @@
       <div class="meetup">
         <div class="meetup__content">
           <MeetupDescription :description="meetup.description" />
-          <MeetupAgenda :agenda="meetup.agenda" />
+          <MeetupAgenda v-if="meetup.agenda.length" :agenda="meetup.agenda" />
         </div>
         <MeetupInfo
           :organizer="meetup.organizer"

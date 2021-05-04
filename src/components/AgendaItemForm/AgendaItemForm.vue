@@ -5,10 +5,24 @@
     </button>
 
     <div class="form-group">
-      <select title="Тип" v-model="type">
+      <label class="form-label">Тип</label>
+
+      <select title="Тип" v-model="type" class="form-control">
         <option v-for="(value, key) in agendaTitles" :value="key" :key="key">{{
           value
         }}</option>
+      </select>
+    </div>
+    <div class="form-group" v-if="type === 'talk'">
+      <label class="form-label">Язык доклада</label>
+
+      <select title="Язык" v-model="language" class="form-control">
+        <option
+          v-for="language in languages"
+          :value="language.value"
+          :key="language.value"
+          >{{ language.title }}</option
+        >
       </select>
     </div>
 
@@ -45,12 +59,18 @@
       <label class="form-label">Описание</label>
       <textarea v-model.lazy="description" class="form-control"></textarea>
     </div>
+    <div class="form-group">
+      <label class="form-label">Докладчик</label>
+      <textarea v-model.lazy="speaker" class="form-control"></textarea>
+    </div>
   </div>
 </template>
 
 <script>
 import AppIcon from "@/components/AppIcon";
+
 import { agendaItemTitles } from "@/utils/data.js";
+import { languages } from "@/utils/data.js";
 import { mapGetters, mapActions } from "vuex";
 
 const mapField = (field) => ({
@@ -79,17 +99,22 @@ export default {
     ...mapGetters({
       meetup: "meetup/meetup",
     }),
+    languages() {
+      return languages;
+    },
     agendaItem() {
       return this.meetup.agenda[this.index];
     },
     agendaTitles() {
       return agendaItemTitles;
     },
+    language: mapField("language"),
     startsAt: mapField("startsAt"),
     endsAt: mapField("endsAt"),
     type: mapField("type"),
     title: mapField("title"),
     description: mapField("description"),
+    speaker: mapField("speaker"),
   },
   methods: {
     ...mapActions({
