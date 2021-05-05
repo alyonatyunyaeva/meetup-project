@@ -37,12 +37,12 @@
 </template>
 
 <script>
-import AuthLayout from "@/components/AuthLayout";
+import AuthLayout from "@/components/Layouts/AuthLayout";
 import { mapGetters, mapActions } from "vuex";
 import { meetupApi } from "@/api";
 
 export default {
-  name: "LoginPage",
+  name: "Login",
   components: { AuthLayout },
   data() {
     return {

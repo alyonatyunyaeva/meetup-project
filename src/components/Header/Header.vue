@@ -13,8 +13,10 @@
       <router-link to="/register">Регистрация</router-link>
     </nav>
     <nav v-if="profile.id">
-      <router-link to="/">Мои митапы</router-link>
-      <router-link to="/">Организуемые митапы</router-link>
+      <router-link :to="{ name: 'attending' }">Мои митапы</router-link>
+      <router-link :to="{ name: 'organizing' }"
+        >Организуемые митапы</router-link
+      >
       <router-link to="/form">Создать митап</router-link>
       <router-link to="/">
         <span @click="onLogout">{{ profile.fullname }} (выйти)</span>

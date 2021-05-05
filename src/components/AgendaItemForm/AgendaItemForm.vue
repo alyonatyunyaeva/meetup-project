@@ -67,7 +67,7 @@
 </template>
 
 <script>
-import AppIcon from "@/components/AppIcon";
+import AppIcon from "@/components/AppIcon/AppIcon";
 
 import { agendaItemTitles } from "@/utils/data.js";
 import { languages } from "@/utils/data.js";

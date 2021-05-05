@@ -50,11 +50,11 @@
 
 <script>
 // import { register } from "@/utils/data.js";
-import AuthLayout from "@/components/AuthLayout";
+import AuthLayout from "@/components/Layouts/AuthLayout";
 import { meetupApi } from "@/api";
 
 export default {
-  name: "RegisterPage",
+  name: "Register",
   components: {
     AuthLayout,
   },

@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper bg-grey">
-    <Header/>
+    <Header />
     <main>
       <slot></slot>
     </main>
@@ -10,13 +10,13 @@
 
 <script>
 import Header from "@/components/Header/Header";
-import TheFooter from "./TheFooter";
+import TheFooter from "@/components/Footer/Footer";
 export default {
   name: "BaseLayout",
   components: {
     Header,
-    TheFooter
-  }
+    TheFooter,
+  },
 };
 </script>
 

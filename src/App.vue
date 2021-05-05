@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import BaseLayout from "./components/BaseLayout";
+import BaseLayout from "./components/Layouts/BaseLayout";
 import { mapActions } from "vuex";
 export default {
   name: "App",

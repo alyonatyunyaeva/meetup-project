@@ -92,7 +92,6 @@
 </template>
 
 <script>
-import FormLayout from "@/components/FormLayout";
 import AgendaItemForm from "@/components/AgendaItemForm/AgendaItemForm";
 import { required } from "vuelidate/lib/validators";
 import { format } from "date-fns";
@@ -127,7 +126,6 @@ export default {
   name: "MeetupForm",
 
   components: {
-    FormLayout,
     AgendaItemForm,
   },
   data() {
