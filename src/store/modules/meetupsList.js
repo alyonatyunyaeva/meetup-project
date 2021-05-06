@@ -50,7 +50,6 @@ const mutations = {
       }),
       dateOnlyString: new Date(meetup.date).toISOString().split("T")[0],
     }));
-    console.log("state.meetupsList --->", state.meetupsList);
   },
   _setFilteredMeetups(state) {
     const dateFilter = (meetup) =>

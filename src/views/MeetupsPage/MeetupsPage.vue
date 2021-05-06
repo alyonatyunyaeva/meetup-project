@@ -2,7 +2,11 @@
   <div class="container">
     <div class="filters-panel">
       <div class="filters-panel__col">
-        <!-- <form-check v-model="filter.date" :options="$options.dateFilterOptions" name="date" /> -->
+        <form-check
+          v-model="date"
+          :options="$options.dateFilterOptions"
+          name="date"
+        />
       </div>
 
       <div class="filters-panel__col">
@@ -32,8 +36,7 @@
         :meetups="filteredMeetups"
       />
     </template>
-    <div v-else>Митапов по заданным условиям не найдено...</div>
-    <!-- <app-empty v-else>Митапов по заданным условиям не найдено...</app-empty> -->
+    <app-empty v-else>Митапов по заданным условиям не найдено...</app-empty>
   </div>
 </template>
 
@@ -42,8 +45,8 @@ import MeetupsList from "@/components/Meetups/MeetupsList.vue";
 import MeetupsCalendar from "@/components/Meetups/MeetupsCalendar.vue";
 import PageTabs from "@/components/Meetups/PageTabs.vue";
 import { mapActions, mapGetters } from "vuex";
-// import { FormCheck } from './FormCheck.js';
-// import { AppEmpty } from './AppEmpty.js';
+import FormCheck from "@/components/FormCheck/FormCheck";
+import AppEmpty from "@/components/AppEmpty/AppEmpty";
 
 export default {
   name: "MeetupsPage",
@@ -57,8 +60,8 @@ export default {
     MeetupsList,
     MeetupsCalendar,
     PageTabs,
-    // FormCheck,
-    // AppEmpty,
+    FormCheck,
+    AppEmpty,
   },
   watch: {
     $route: {
@@ -94,6 +97,14 @@ export default {
       },
       set(value) {
         this.setFilter({ filter: "search", value });
+      },
+    },
+    date: {
+      get() {
+        return this.filter?.date;
+      },
+      set(value) {
+        this.setFilter({ filter: "date", value });
       },
     },
   },

@@ -79,12 +79,12 @@ export default {
       const email = this.email;
       const password = this.password;
 
-      const response = await meetupApi.login({ email, password });
-      if (response.message) {
+      const result = await meetupApi.login({ email, password });
+      if (result.message) {
         return;
       }
-      this.setProfile(response);
-      localStorage.setItem("profile", JSON.stringify(response));
+      this.setProfile(result);
+      localStorage.setItem("profile", JSON.stringify(result));
       this.$router.push({ name: "meetups" });
     },
   },

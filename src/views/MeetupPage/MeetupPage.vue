@@ -1,6 +1,10 @@
 <template>
   <div>
-    <MeetupView v-if="meetup" :meetup="meetup" />
+    <MeetupView
+      @changeParticipaTion="getMeetup"
+      v-if="meetup"
+      :meetup="meetup"
+    />
   </div>
 </template>
 
@@ -20,9 +24,15 @@ export default {
       meetupId: this.$route.params.meetupId,
     };
   },
+  methods: {
+    async getMeetup() {
+      this.meetup = await meetupApi.fetchMeetup(this.meetupId);
+      return;
+    },
+  },
 
-  async mounted() {
-    this.meetup = await meetupApi.fetchMeetup(this.meetupId);
+  mounted() {
+    this.getMeetup();
   },
 };
 </script>

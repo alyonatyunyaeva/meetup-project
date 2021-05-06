@@ -52,6 +52,7 @@
 // import { register } from "@/utils/data.js";
 import AuthLayout from "@/components/Layouts/AuthLayout";
 import { meetupApi } from "@/api";
+import { mapGetters, mapActions } from "vuex";
 
 export default {
   name: "Register",
@@ -68,6 +69,9 @@ export default {
     };
   },
   methods: {
+    ...mapActions({
+      setProfile: "profile/setProfile",
+    }),
     async sendRegisterForm(e) {
       e.preventDefault();
       if (!this.email) {
@@ -86,12 +90,15 @@ export default {
         alert("Требуется согласиться с условиями");
         return;
       }
-      const response = await meetupApi.register(
+      const result = await meetupApi.register(
         this.email,
         this.profileName,
         this.password
       );
-      alert(response.message || response.id + " - id пользователя");
+      if (result.message) {
+        return;
+      }
+      this.$router.push({ name: "login" });
     },
   },
 };

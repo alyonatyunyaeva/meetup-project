@@ -93,6 +93,7 @@
 
 <script>
 import AgendaItemForm from "@/components/AgendaItemForm/AgendaItemForm";
+import FormLayout from "@/components/Layouts/FormLayout";
 import { required } from "vuelidate/lib/validators";
 import { format } from "date-fns";
 import { mapGetters, mapActions } from "vuex";
@@ -112,7 +113,6 @@ function createAgendaItem() {
 
 function createLocalMeetup() {
   return {
-    id: null,
     title: "",
     description: "",
     imageId: null,
@@ -127,6 +127,7 @@ export default {
 
   components: {
     AgendaItemForm,
+    FormLayout,
   },
   data() {
     return {
@@ -202,6 +203,7 @@ export default {
       removeMeetup: "meetup/removeMeetup",
       uploadImg: "meetup/uploadImg",
       createMeetup: "meetup/createMeetup",
+      updateMeetup: "meetup/updateMeetup",
       flushMeetup: "meetup/flush",
     }),
 
@@ -217,7 +219,10 @@ export default {
       this.$v.$touch();
       this.submited = true;
       if (this.$v.$invalid) return;
-      const result = await this.createMeetup();
+      let result;
+      this.meetup.id
+        ? (result = await this.updateMeetup())
+        : (result = await this.createMeetup());
       if (result.message) {
         alert(result.message);
         return;

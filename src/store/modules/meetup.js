@@ -40,10 +40,17 @@ const actions = {
   },
   createMeetup: async () => {
     const opts = state.meetup;
-    // delete opts.id;
-
     try {
       const result = await meetupApi.createMeetup(opts);
+      return result;
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  updateMeetup: async () => {
+    const opts = state.meetup;
+    try {
+      const result = await meetupApi.updateMeetup(opts);
       return result;
     } catch (err) {
       console.log(err);

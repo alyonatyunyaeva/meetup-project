@@ -12,6 +12,28 @@
           :place="meetup.place"
           :date="date"
         />
+        <div v-if="meetup.organizing">
+          <button class="button button_primary" @click="onEdit">
+            Редактировать
+          </button>
+          <button class="button button_danger">Удалить</button>
+        </div>
+        <div v-else-if="meetup.attending">
+          <button
+            class="button button_primary"
+            @click="onChangeParticipaTion('DELETE')"
+          >
+            Отменить участие
+          </button>
+        </div>
+        <div v-else-if="!meetup.attending">
+          <button
+            class="button button_primary"
+            @click="onChangeParticipaTion('PUT')"
+          >
+            Принять участие
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -23,10 +45,11 @@ import MeetupDescription from "./MeetupDescription.vue";
 import MeetupAgenda from "./MeetupAgenda.vue";
 import MeetupInfo from "./MeetupInfo.vue";
 import { getMeetupCoverLink } from "@/utils/data.js";
+import { mapActions } from "vuex";
+import { meetupApi } from "@/api";
 
 export default {
   name: "MeetupView",
-  //:coverStyle="coverStyle"
 
   components: {
     MeetupCover,
@@ -50,6 +73,19 @@ export default {
       return new Date(this.meetup.date);
     },
   },
+  methods: {
+    ...mapActions({
+      setMeetup: "meetup/setMeetup",
+    }),
+    onEdit() {
+      this.setMeetup({ ...this.meetup, date: this.date });
+      this.$router.push({ name: "form" });
+    },
+    async onChangeParticipaTion(method) {
+      await meetupApi.changeParticipation(this.meetup.id, method);
+      this.$emit("changeParticipaTion");
+    },
+  },
 };
 </script>
 
@@ -69,6 +105,46 @@ export default {
   font-size: 18px;
   line-height: 28px;
 }
+
+.button {
+  display: inline-block;
+  padding: 10px 24px;
+  font-weight: 700;
+  font-size: 20px;
+  line-height: 28px;
+  color: initial;
+  text-align: center;
+  border: 4px solid transparent;
+  transition: 0.2s all;
+  outline: none;
+  box-shadow: none;
+  background-color: transparent;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.button.button_primary {
+  background-color: var(--blue);
+  border-color: var(--blue);
+  color: var(--white);
+}
+
+.button.button_primary:hover {
+  background-color: var(--blue-light);
+  border-color: var(--blue-light);
+  color: var(--blue);
+}
+
+.button.button_danger {
+  background-color: var(--white);
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.button.button_danger:hover {
+  border-color: var(--red-light);
+}
+
 @media all and (min-width: 992px) {
   .meetup {
     flex-direction: row;
