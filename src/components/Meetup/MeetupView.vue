@@ -16,7 +16,9 @@
           <button class="button button_primary" @click="onEdit">
             Редактировать
           </button>
-          <button class="button button_danger">Удалить</button>
+          <button class="button button_danger" @click="onDelete">
+            Удалить
+          </button>
         </div>
         <div v-else-if="meetup.attending">
           <button
@@ -76,6 +78,7 @@ export default {
   methods: {
     ...mapActions({
       setMeetup: "meetup/setMeetup",
+      deleteMeetup: "meetup/deleteMeetup",
     }),
     onEdit() {
       this.setMeetup({ ...this.meetup, date: this.date });
@@ -83,7 +86,10 @@ export default {
     },
     async onChangeParticipaTion(method) {
       await meetupApi.changeParticipation(this.meetup.id, method);
-      this.$emit("changeParticipaTion");
+    },
+    onDelete() {
+      this.deleteMeetup(this.meetup.id);
+      this.$router.push({ name: "meetups" });
     },
   },
 };

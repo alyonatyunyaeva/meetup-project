@@ -4,13 +4,11 @@
       <form class="form meetup-form" @submit="sendForm">
         <div class="meetup-form__content">
           <fieldset class="form-section">
-            <div class="form-group">
-              <label class="form-label">Название</label>
-              <input class="form-control" v-model.lazy="$v.title.$model" />
-              <div style="color: red" v-show="!$v.title.required && submited">
-                Поле обязательно
-              </div>
-            </div>
+            <Input
+              label="Название"
+              v-model="title"
+              :showError="!$v.title.required && submited"
+            />
             <div class="form-group">
               <label class="form-label">Дата</label>
               <input class="form-control" type="date" v-model.lazy="date" />
@@ -24,35 +22,27 @@
                 Неверная дата
               </div>
             </div>
-            <div class="form-group">
-              <label class="form-label">Место проведения</label>
-              <input class="form-control" v-model.lazy="place" />
-              <div style="color: red" v-if="!$v.place.required && submited">
-                Поле обязательно
-              </div>
-            </div>
-            <div class="form-group">
-              <label class="form-label">Описание</label>
-              <textarea
-                class="form-control"
-                style="min-height:200px"
-                v-model.lazy="description"
-              />
-              <div
-                style="color: red"
-                v-if="!$v.description.required && submited"
-              >
-                Поле обязательно
-              </div>
-            </div>
+            <Input
+              label="Место проведения"
+              v-model="place"
+              :showError="!$v.place.required && submited"
+            />
+            <Input
+              label="Описание"
+              v-model="description"
+              :showError="!$v.description.required && submited"
+              textarea
+            />
             <div class="form-group">
               <label class="form-label">Изображение</label>
               <input
+                ref="file"
                 class="form-control"
-                @change="onUploadImage"
-                style="min-height:200px"
+                @change="onUploadImage()"
                 type="file"
+                accept="image/*"
               />
+              <img v-bind:src="image" v-show="showPreview" class="preview" />
             </div>
           </fieldset>
 
@@ -79,10 +69,10 @@
               class="button button_secondary button_block"
               @click="onCancel"
             >
-              Cancel
+              Отмена
             </button>
             <button class="button button_primary button_block" type="submit">
-              Submit
+              Сохранить
             </button>
           </div>
         </div>
@@ -94,6 +84,7 @@
 <script>
 import AgendaItemForm from "@/components/AgendaItemForm/AgendaItemForm";
 import FormLayout from "@/components/Layouts/FormLayout";
+import Input from "@/components/Input/Input";
 import { required } from "vuelidate/lib/validators";
 import { format } from "date-fns";
 import { mapGetters, mapActions } from "vuex";
@@ -128,10 +119,13 @@ export default {
   components: {
     AgendaItemForm,
     FormLayout,
+    Input,
   },
   data() {
     return {
-      imageFile: null,
+      rawImage: null,
+      image: null,
+      showPreview: false,
       submited: false,
     };
   },
@@ -156,11 +150,15 @@ export default {
     ...mapGetters({
       meetup: "meetup/meetup",
     }),
+
     title: {
       get() {
+        console.log("title1");
         return this.meetup?.title;
       },
       set(value) {
+        console.log("title2");
+
         this.setMeetupField({ field: "title", value });
       },
     },
@@ -220,6 +218,8 @@ export default {
       this.submited = true;
       if (this.$v.$invalid) return;
       let result;
+      let file = this.rawImage;
+      await this.uploadImg({ file });
       this.meetup.id
         ? (result = await this.updateMeetup())
         : (result = await this.createMeetup());
@@ -231,10 +231,25 @@ export default {
       this.$router.push({ name: "meetup", params: { meetupId: result.id } });
       this.flushMeetup();
     },
-    async onUploadImage(e) {
-      const [file] = e.target.files;
-      this.imageFile = file;
-      await this.uploadImg({ file });
+    onUploadImage() {
+      this.rawImage = this.$refs.file.files[0];
+
+      let reader = new FileReader();
+
+      reader.addEventListener(
+        "load",
+        function() {
+          this.showPreview = true;
+          this.image = reader.result;
+        }.bind(this),
+        false
+      );
+
+      if (this.rawImage) {
+        if (/\.(jpe?g|png|gif)$/i.test(this.rawImage.name)) {
+          reader.readAsDataURL(this.rawImage);
+        }
+      }
     },
     newMeetup() {
       if (!this.meetup) {

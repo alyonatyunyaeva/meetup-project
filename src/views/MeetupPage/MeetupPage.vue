@@ -1,10 +1,6 @@
 <template>
   <div>
-    <MeetupView
-      @changeParticipaTion="getMeetup"
-      v-if="meetup"
-      :meetup="meetup"
-    />
+    <MeetupView v-if="meetup" :meetup="meetup" />
   </div>
 </template>
 

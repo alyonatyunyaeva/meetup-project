@@ -32,6 +32,7 @@ class MeetupAPI {
   }
   async uploadImg(opts = {}) {
     const { file } = opts;
+    console.log("file", file);
     let formData = new FormData();
     formData.append("file", file);
 
@@ -76,18 +77,15 @@ class MeetupAPI {
       credentials: "include",
     });
   }
-  // async deleteParticipation(id) {
-  //   return fetch(`/api/meetups/${id}/participation`, {
-  //     method: "DELETE",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     credentials: "include",
-  //     body: JSON.stringify(opts),
-  //   }).then((res) => {
-  //     return res.json();
-  //   });
-  // }
+  async deleteMeetup(id) {
+    return fetch(`/api/meetups/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+  }
   async fetchMeetups() {
     return fetch("/api/meetups").then((res) => res.json());
   }

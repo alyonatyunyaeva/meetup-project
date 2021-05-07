@@ -56,6 +56,14 @@ const actions = {
       console.log(err);
     }
   },
+  deleteMeetup: async ({ dispatch }, id) => {
+    const result = await meetupApi.deleteMeetup(id);
+    console.log("ghbdbn");
+    if (state.meetup?.id === id) {
+      dispatch("flush");
+    }
+    return result;
+  },
 
   flush: ({ commit }) => {
     commit("_flush");
