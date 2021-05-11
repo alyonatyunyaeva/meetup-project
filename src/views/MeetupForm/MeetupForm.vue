@@ -6,44 +6,37 @@
           <fieldset class="form-section">
             <Input
               label="Название"
-              v-model="title"
+              v-model.lazy="title"
               :showError="!$v.title.required && submited"
             />
-            <div class="form-group">
-              <label class="form-label">Дата</label>
-              <input class="form-control" type="date" v-model.lazy="date" />
-              <div style="color: red" v-if="!$v.date.required && submited">
-                Поле обязательно
-              </div>
-              <div
-                style="color: red"
-                v-if="$v.date.required && !$v.date.minValue"
-              >
-                Неверная дата
-              </div>
-            </div>
+            <Input
+              label="Дата"
+              type="date"
+              v-model.lazy="date"
+              :showError="
+                (!$v.title.required && submited) ||
+                  ($v.date.required && !$v.date.minValue)
+              "
+              :errorText="!$v.date.minValue ? 'Неверная дата' : ''"
+            />
+            <div
+              style="color: red"
+              v-if="$v.date.required && !$v.date.minValue"
+            ></div>
+
             <Input
               label="Место проведения"
-              v-model="place"
+              v-model.lazy="place"
               :showError="!$v.place.required && submited"
             />
             <Input
               label="Описание"
-              v-model="description"
+              v-model.lazy="description"
               :showError="!$v.description.required && submited"
               textarea
             />
-            <div class="form-group">
-              <label class="form-label">Изображение</label>
-              <input
-                ref="file"
-                class="form-control"
-                @change="onUploadImage()"
-                type="file"
-                accept="image/*"
-              />
-              <img v-bind:src="image" v-show="showPreview" class="preview" />
-            </div>
+
+            <ImageUpload @uploaded="onUploaded" :initialImg="link" />
           </fieldset>
 
           <h3 class="form__section-title">Программа</h3>
@@ -85,9 +78,11 @@
 import AgendaItemForm from "@/components/AgendaItemForm/AgendaItemForm";
 import FormLayout from "@/components/Layouts/FormLayout";
 import Input from "@/components/Input/Input";
+import ImageUpload from "@/components/ImageUpload/ImageUpload";
 import { required } from "vuelidate/lib/validators";
 import { format } from "date-fns";
 import { mapGetters, mapActions } from "vuex";
+import { getMeetupCoverLink } from "@/utils/data.js";
 
 function createAgendaItem() {
   return {
@@ -120,12 +115,11 @@ export default {
     AgendaItemForm,
     FormLayout,
     Input,
+    ImageUpload,
   },
   data() {
     return {
-      rawImage: null,
       image: null,
-      showPreview: false,
       submited: false,
     };
   },
@@ -150,15 +144,15 @@ export default {
     ...mapGetters({
       meetup: "meetup/meetup",
     }),
+    link() {
+      return this.meetup?.imageId ? getMeetupCoverLink(this.meetup) : "";
+    },
 
     title: {
       get() {
-        console.log("title1");
         return this.meetup?.title;
       },
       set(value) {
-        console.log("title2");
-
         this.setMeetupField({ field: "title", value });
       },
     },
@@ -218,7 +212,7 @@ export default {
       this.submited = true;
       if (this.$v.$invalid) return;
       let result;
-      let file = this.rawImage;
+      let file = this.image;
       await this.uploadImg({ file });
       this.meetup.id
         ? (result = await this.updateMeetup())
@@ -231,25 +225,8 @@ export default {
       this.$router.push({ name: "meetup", params: { meetupId: result.id } });
       this.flushMeetup();
     },
-    onUploadImage() {
-      this.rawImage = this.$refs.file.files[0];
-
-      let reader = new FileReader();
-
-      reader.addEventListener(
-        "load",
-        function() {
-          this.showPreview = true;
-          this.image = reader.result;
-        }.bind(this),
-        false
-      );
-
-      if (this.rawImage) {
-        if (/\.(jpe?g|png|gif)$/i.test(this.rawImage.name)) {
-          reader.readAsDataURL(this.rawImage);
-        }
-      }
+    onUploaded(file) {
+      this.image = file;
     },
     newMeetup() {
       if (!this.meetup) {

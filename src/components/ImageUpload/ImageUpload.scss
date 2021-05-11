@@ -1,0 +1,27 @@
+.preview {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  max-width: 512px;
+  height: 228px;
+
+  border-radius: 8px;
+  border: 2px solid var(--blue-light);
+
+  color: var(--white);
+  font-family: "Nunito", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 28px;
+
+  --bg-url: var(--default-cover);
+  background-size: cover;
+  background-position: center;
+  background-image: linear-gradient(
+      0deg,
+      rgba(0, 0, 0, 0.4),
+      rgba(0, 0, 0, 0.4)
+    ),
+    var(--bg-url);
+}
