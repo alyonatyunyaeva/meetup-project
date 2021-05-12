@@ -32,14 +32,11 @@ class MeetupAPI {
   }
   async uploadImg(opts = {}) {
     const { file } = opts;
-    console.log("file", file);
-    let formData = new FormData();
-    formData.append("file", file);
 
     return fetch("/api/images/upload", {
       method: "POST",
       credentials: "include",
-      body: formData,
+      body: file,
     }).then((res) => {
       return res.json();
     });

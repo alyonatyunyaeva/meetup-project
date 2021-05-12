@@ -39,4 +39,4 @@ export default {
 };
 </script>
 
-<style src="./FormCheck.css" scoped></style>
+<style src="./FormCheck.scss" lang="scss" scoped></style>

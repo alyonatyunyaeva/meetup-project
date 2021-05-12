@@ -1,30 +1,25 @@
 <template>
   <AuthLayout title="Вход">
     <form class="form" @submit="sendLoginForm">
-      <div class="form-group">
-        <label class="form-label">Email</label>
-        <div class="input-group">
-          <input
-            type="email"
-            class="form-control"
-            placeholder="demo@email"
-            v-model="email"
-          />
-        </div>
-      </div>
-      <div class="form-group">
-        <label class="form-label">Пароль</label>
-        <div class="input-group">
-          <input
-            type="password"
-            class="form-control"
-            placeholder="password"
-            v-model="password"
-          />
-        </div>
-      </div>
+      <Input
+        label="Email"
+        type="email"
+        placeholder="demo@email"
+        v-model.lazy="email"
+        :showError="$v.email.$invalid"
+        errorText="Требуется ввести email"
+      />
+      <Input
+        label="Пароль"
+        type="password"
+        placeholder="password"
+        v-model.lazy="password"
+        :showError="$v.password.$invalid"
+        errorText="Требуется ввести пароль"
+      />
+
       <div class="form__buttons">
-        <button type="submit" class="button sbutton_primary">Войти</button>
+        <Button type="submit" primary>Войти</Button>
       </div>
       <div class="form__append">
         Нет аккаунта?
@@ -38,44 +33,53 @@
 
 <script>
 import AuthLayout from "@/components/Layouts/AuthLayout";
+import Input from "@/components/Input/Input";
+import Button from "@/components/Button/Button";
+import { required, email } from "vuelidate/lib/validators";
+
 import { mapGetters, mapActions } from "vuex";
 import { meetupApi } from "@/api";
 
 export default {
   name: "Login",
-  components: { AuthLayout },
+  components: { AuthLayout, Input, Button },
   data() {
     return {
       email: "demo@email",
       password: "password",
-      // user: null,
     };
+  },
+  validations: {
+    email: {
+      required,
+      // email,
+    },
+    password: {
+      required,
+    },
   },
   computed: {
     ...mapGetters({
       profile: "profile/profile",
     }),
+    // emailErrorText() {
+    //   return this.$v.email.required && !this.$v.email.email
+    //     ? "Формат почты"
+    //     : "Требуется ввести Email";
+    // },
   },
   methods: {
     ...mapActions({
       setProfile: "profile/setProfile",
     }),
-    canSend() {
-      if (!this.email) {
-        alert("Требуется ввести Email");
-        return;
-      } else if (!this.password) {
-        alert("Требуется ввести пароль");
-        return;
-      } else {
-        return true;
-      }
-    },
 
     async sendLoginForm(e) {
       e.preventDefault();
-      if (!this.canSend()) return;
-
+      this.$v.$touch();
+      if (this.$v.$invalid) {
+        console.log("invalid");
+        return;
+      }
       const email = this.email;
       const password = this.password;
 
@@ -96,4 +100,4 @@ export default {
 };
 </script>
 
-<style scoped src="./Login.css"></style>
+<style scoped></style>

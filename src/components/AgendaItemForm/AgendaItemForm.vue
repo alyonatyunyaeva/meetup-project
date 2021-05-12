@@ -5,18 +5,18 @@
     </button>
 
     <div class="form-group">
-      <label class="form-label">Тип</label>
+      <FormLabel>Тип</FormLabel>
 
-      <select title="Тип" v-model="type" class="form-control">
+      <select title="Тип" v-model="type" class="select">
         <option v-for="(value, key) in agendaTitles" :value="key" :key="key">{{
           value
         }}</option>
       </select>
     </div>
     <div class="form-group" v-if="type === 'talk'">
-      <label class="form-label">Язык доклада</label>
+      <FormLabel>Язык доклада</FormLabel>
 
-      <select title="Язык" v-model="language" class="form-control">
+      <select title="Язык" v-model="language" class="select">
         <option
           v-for="language in languages"
           :value="language.value"
@@ -28,46 +28,35 @@
 
     <div class="form__row">
       <div class="form__col">
-        <div class="form-group">
-          <label class="form-label">Начало</label>
-          <input
-            class="form-control"
-            type="time"
-            placeholder="00:00"
-            v-model.lazy="startsAt"
-          />
-        </div>
+        <Input
+          label="Начало"
+          type="time"
+          placeholder="00:00"
+          v-model.lazy="startsAt"
+        />
       </div>
       <div class="form__col">
-        <div class="form-group">
-          <label class="form-label">Окончание</label>
-          <input
-            class="form-control"
-            v-model.lazy="endsAt"
-            type="time"
-            placeholder="00:00"
-          />
-        </div>
+        <Input
+          label="Окончание"
+          v-model.lazy="endsAt"
+          type="time"
+          placeholder="00:00"
+        />
       </div>
     </div>
 
-    <div class="form-group">
-      <label class="form-label">Заголовок</label>
-      <input class="form-control" v-model.lazy="title" />
-    </div>
-    <div class="form-group">
-      <label class="form-label">Описание</label>
-      <textarea v-model.lazy="description" class="form-control"></textarea>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Докладчик</label>
-      <textarea v-model.lazy="speaker" class="form-control"></textarea>
-    </div>
+    <Input label="Заголовок" v-model.lazy="title" />
+
+    <Input label="Описание" v-model.lazy="description" textarea />
+
+    <Input label="Докладчик" v-if="type === 'talk'" v-model.lazy="speaker" />
   </div>
 </template>
 
 <script>
 import AppIcon from "@/components/AppIcon/AppIcon";
+import Input from "@/components/Input/Input";
+import FormLabel from "@/components/FormLabel/FormLabel";
 
 import { agendaItemTitles } from "@/utils/data.js";
 import { languages } from "@/utils/data.js";
@@ -93,6 +82,8 @@ export default {
 
   components: {
     AppIcon,
+    FormLabel,
+    Input,
   },
 
   computed: {
@@ -100,6 +91,7 @@ export default {
       meetup: "meetup/meetup",
     }),
     languages() {
+      this.agendaItem.language = "RU";
       return languages;
     },
     agendaItem() {
@@ -128,4 +120,4 @@ export default {
 };
 </script>
 
-<style src="./AgendaItemForm.css" lang="css" scoped></style>
+<style src="./AgendaItemForm.scss" lang="scss" scoped></style>

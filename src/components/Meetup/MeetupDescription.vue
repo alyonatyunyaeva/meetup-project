@@ -7,13 +7,14 @@
 <script>
 export default {
   props: {
-    description: String
-  }
+    description: String,
+  },
 };
 </script>
 
 <style>
 .meetup-description {
   padding-top: 33px;
+  font-size: 18px;
 }
 </style>

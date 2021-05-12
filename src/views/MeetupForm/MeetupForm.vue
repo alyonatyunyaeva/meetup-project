@@ -7,32 +7,25 @@
             <Input
               label="Название"
               v-model.lazy="title"
-              :showError="!$v.title.required && submited"
+              :showError="$v.title.$invalid && submited"
             />
             <Input
               label="Дата"
               type="date"
               v-model.lazy="date"
-              :showError="
-                (!$v.title.required && submited) ||
-                  ($v.date.required && !$v.date.minValue)
-              "
-              :errorText="!$v.date.minValue ? 'Неверная дата' : ''"
+              :showError="$v.date.$invalid && submited"
+              :errorText="errorTextDate()"
             />
-            <div
-              style="color: red"
-              v-if="$v.date.required && !$v.date.minValue"
-            ></div>
 
             <Input
               label="Место проведения"
               v-model.lazy="place"
-              :showError="!$v.place.required && submited"
+              :showError="$v.place.$invalid && submited"
             />
             <Input
               label="Описание"
               v-model.lazy="description"
-              :showError="!$v.description.required && submited"
+              :showError="$v.description.$invalid && submited"
               textarea
             />
 
@@ -57,16 +50,8 @@
 
         <div class="meetup-form__aside">
           <div class="meetup-form__aside_stick">
-            <button
-              type="button"
-              class="button button_secondary button_block"
-              @click="onCancel"
-            >
-              Отмена
-            </button>
-            <button class="button button_primary button_block" type="submit">
-              Сохранить
-            </button>
+            <Button @click="onCancel" secondary>Отмена</Button>
+            <Button type="submit" primary>Сохранить</Button>
           </div>
         </div>
       </form>
@@ -78,35 +63,14 @@
 import AgendaItemForm from "@/components/AgendaItemForm/AgendaItemForm";
 import FormLayout from "@/components/Layouts/FormLayout";
 import Input from "@/components/Input/Input";
+import Button from "@/components/Button/Button";
 import ImageUpload from "@/components/ImageUpload/ImageUpload";
 import { required } from "vuelidate/lib/validators";
 import { format } from "date-fns";
 import { mapGetters, mapActions } from "vuex";
 import { getMeetupCoverLink } from "@/utils/data.js";
-
-function createAgendaItem() {
-  return {
-    id: null,
-    startsAt: "00:00",
-    endsAt: "00:00",
-    type: "other",
-    title: null,
-    description: null,
-    speaker: null,
-    language: null,
-  };
-}
-
-function createLocalMeetup() {
-  return {
-    title: "",
-    description: "",
-    imageId: null,
-    date: null,
-    place: "",
-    agenda: [],
-  };
-}
+import { createAgendaItem } from "./data.js";
+import { createLocalMeetup } from "./data.js";
 
 export default {
   name: "MeetupForm",
@@ -115,6 +79,7 @@ export default {
     AgendaItemForm,
     FormLayout,
     Input,
+    Button,
     ImageUpload,
   },
   data() {
@@ -198,22 +163,36 @@ export default {
       updateMeetup: "meetup/updateMeetup",
       flushMeetup: "meetup/flush",
     }),
-
+    errorTextDate() {
+      if (!this.$v.date.required) {
+        return;
+      }
+      if (!this.$v.date.minValue) {
+        return "Неверная дата";
+      }
+    },
     addAgendaItem() {
       this.pushAgendaItem(createAgendaItem());
     },
     onCancel() {
       this.$router.push({ name: "meetups" });
     },
+    isFormCorrect() {
+      this.$v.$touch();
+      this.submited = true;
+      return this.$v.$invalid ? false : true;
+    },
 
     async sendForm(e) {
       e.preventDefault();
-      this.$v.$touch();
-      this.submited = true;
-      if (this.$v.$invalid) return;
+      if (!this.isFormCorrect()) {
+        return;
+      }
       let result;
-      let file = this.image;
-      await this.uploadImg({ file });
+      if (this.image) {
+        let file = this.image;
+        await this.uploadImg({ file });
+      }
       this.meetup.id
         ? (result = await this.updateMeetup())
         : (result = await this.createMeetup());

@@ -1,19 +1,16 @@
 <template>
-  <div>
+  <div class="form-group">
     <FormLabel>Изображение</FormLabel>
-
-    <div>
-      <div :style="backgroundImg" class="preview" @click="clickToUpload">
-        <input
-          ref="file"
-          @change="onUploadImage()"
-          type="file"
-          accept="image/*"
-          style="display: none"
-        />
-        <div v-if="!image">Загрузить изображение</div>
-        <div v-else>Удалить изображение</div>
-      </div>
+    <div :style="backgroundImg" class="preview" @click="clickToUpload">
+      <input
+        ref="file"
+        @change="onUploadImage()"
+        type="file"
+        accept="image/*"
+        style="display: none"
+      />
+      <div v-if="!image">Загрузить изображение</div>
+      <div v-else>Удалить изображение</div>
     </div>
   </div>
 </template>
@@ -52,10 +49,15 @@ export default {
       }
       this.$refs.file.click();
     },
+    prepareImg(file) {
+      let formData = new FormData();
+      formData.append("file", file);
+      this.$emit("uploaded", formData);
+    },
+
     onUploadImage() {
       this.rawImage = this.$refs.file.files[0];
-      this.$emit("uploaded", this.rawImage);
-
+      this.prepareImg(this.rawImage);
       let reader = new FileReader();
 
       reader.addEventListener(

@@ -1,11 +1,7 @@
-/** URL адрес API */
 export const API_URL = "https://course-vue.javascript.ru/api";
 
-/**
- * Возвращает ссылку на изображение митапа для митапа
- * @param meetup - объект с описанием митапа (и параметром meetupId)
- * @return {string} - ссылка на изображение митапа
- */
+//Возвращает ссылку на изображение митапа для митапа
+
 export function getMeetupCoverLink(meetup) {
   return `${API_URL}/images/${meetup.imageId}`;
 }

@@ -1,9 +1,5 @@
 <template>
   <div class="meetup-agenda">
-    <p class="meetup-agenda__empty" v-if="!agenda.length">
-      Программа пока пуста, но когда-нибудь в ней обязательно что-нибудь
-      появится!
-    </p>
     <MeetupAgendaItem
       v-for="agendaItem in agenda"
       :agendaItem="agendaItem"
@@ -13,21 +9,21 @@
 </template>
 
 <script>
-import MeetupAgendaItem from "./MeetupAgendaItem.vue";
+import MeetupAgendaItem from "./MeetupAgendaItem/MeetupAgendaItem";
 
 export default {
   name: "MeetupAgenda",
 
   components: {
-    MeetupAgendaItem
+    MeetupAgendaItem,
   },
 
   props: {
     agenda: {
       type: Array,
-      required: true
-    }
-  }
+      required: true,
+    },
+  },
 };
 </script>
 
